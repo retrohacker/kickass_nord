@@ -1,0 +1,15 @@
+##############################################################################
+#                                                                            #
+# Domain names placed in this file will bypass the VPN. This can be handy    #
+# if you want to have all the devices in your house use a VPN by default but #
+# also need to use services that block access from VPNs (i.e. Netflix).      #
+#                                                                            #
+# Syntax:                                                                    #
+# * Place one domain name per line                                           #
+# * Dont include things like https:// or the URL, just the domain            #
+# * Lines starting with a # will be ignored                                  #
+# * Whitespace is ignored                                                    #
+#                                                                            #
+##############################################################################
+
+netflix.com
