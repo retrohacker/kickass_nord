@@ -13,7 +13,7 @@ command -v jq 2>&1 >/dev/null || { echo >&2 "jq is required but not installed"; 
 
 TEMPLATE=./nord.udp.ovpn.template
 TEMPFILE=./.nord.udp.ovpn.temp
-OUTPUT=./nord.udp.ovpn
+KEY_FOLDER=./keys
 
 cp $TEMPLATE $TEMPFILE
 
@@ -61,13 +61,13 @@ for server in $(curl -s $NORD_URL | jq -r '.[] | .station + "|" + .hostname')
 do
   ip=$(echo $server | cut -f 1 -d '|')
   hostname=$(echo $server | cut -f 2 -d '|')
-  echo " * $hostname"
-  echo "remote $ip 1194" >> $TEMPFILE
+  file="$hostname.udp.ovpn"
+  cat $TEMPFILE > $file
+  echo "remote $ip 1194" >> $file
+  cat $KEY_FOLDER/$hostname >> $file
+  echo -n -e '\e[0;32m' # Green
+  echo " * Generated $file"
+  echo -n -e '\e[0m' # Reset color
 done
 echo
-mv $TEMPFILE $OUTPUT
-echo '==========================================='
-echo -n -e '\e[0;32m' # Blue
-echo " Generated $OUTPUT"
-echo -n -e '\e[0m' # Reset color
-echo '==========================================='
+rm $TEMPFILE

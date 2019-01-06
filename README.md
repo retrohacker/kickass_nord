@@ -8,9 +8,9 @@ $ ./runme.sh
 $ sudo openvpn nord.udp.ovpn
 ```
 
-This script sets up 5 upstread NordVPN servers for your configuration to failover to, meaning there is no longer a single point of failure for your VPN connection.
+This script allows you to easily have specific domains bypass your VPN. Just place the domains you want to bypass your VPN into [`./bypass.txt`](./bypass.txt) and it will handle the rest!
 
-You can also add domain names you want to bypass your VPN into the bypass.txt file, and it will configure that for you.
+This script generates 5 configuration files, one for each of the 5 best NordVPN servers recommended for you at the current time.
 
 # Example output
 
