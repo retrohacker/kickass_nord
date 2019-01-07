@@ -34,6 +34,22 @@ echo -n -e '\e[0;34m' # Blue
 echo 'Whitelisting domains in bypass.txt...'
 echo -n -e '\e[0m' # Reset color
 echo
+function bypass {
+  domain=$1
+  # Resolve all the IP addresses for a domain name and configure the VPN to
+  # bypass them
+  for ip in $(dig +short A $domain)
+  do
+    if [[ $ip =~ [0-9]{1,3}\.[0-9]{1,3}.[0-9]{1,3}\.[0-9]{1,3} ]]
+    then
+      echo "  * ${ip}"
+      echo "route ${ip} 255.255.255.255 net_gateway" >> $TEMPFILE
+   else
+     echo "    * $domain resolved to $ip..."
+     bypass $ip
+   fi
+  done
+}
 while IFS='' read -r domain || [[ -n "$domain" ]]; do
   # Remove Whitespace
   domain=$(echo "$domain" | tr -d '[:space:]')
@@ -43,14 +59,10 @@ while IFS='' read -r domain || [[ -n "$domain" ]]; do
     continue
   fi
   echo "Bypassing $domain..."
-  # Resolve all the IP addresses for a domain name and configure the VPN to
-  # bypass them
-  for ip in $(dig +short A $domain)
-  do
-    echo "  * ${ip}"
-    echo "route ${ip} 255.255.255.255 net_gateway" >> $TEMPFILE
-  done
+  bypass $domain
 done < ./bypass.txt
+cat $TEMPFILE | sort | uniq > .uniq # Remove duplicate lines
+mv .uniq $TEMPFILE
 echo
 echo -n -e '\e[0;34m' # Blue
 echo 'Finding best nord servers...'
